@@ -1,37 +1,49 @@
-import requests
+#!flask/bin/python
+from flask import Flask
+from flask import request
 import sys
 import urllib.parse
+import requests
+import psycopg2
 
-from http.server import BaseHTTPRequestHandler, HTTPServer
+app = Flask(__name__)
+key = sys.argv[1]
 
-class GeocodeHandler(BaseHTTPRequestHandler):
-        
-        def do_GET(self):
-                address = urllib.parse.quote_plus("1600 Amphitheatre Parkway, Mountain View, California")
-                key = "redacted"
 
-                url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + key
+def geocode(addr):
+    """take a string address and return a lat,long tuple"""
 
-                self.send_header('Content-type','text/html')
-                self.end_headers()
+    address = urllib.parse.quote_plus(addr)
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + key
 
-                response = requests.get(url)
+    print (url)
+ 
+    response = requests.get(url)
 
-                lat = response.json()['results'][0]['geometry']['location']['lat']
-                lng = response.json()['results'][0]['geometry']['location']['lng']
-                faddress = response.json()['results'][0]['formatted_address']
-                
-                message = str(lat) + "," + str(lng)
-                self.wfile.write(bytes(message, "utf8"))
-                
-                self.send_response(200)
-                return
+    print (response.json())
+    return (response.json()['results'][0]['geometry']['location']['lat'], response.json()['results'][0]['geometry']['location']['lng'])
 
-        
-def run(server_class=HTTPServer, handler_class=GeocodeHandler):
-    server_address = ('', 9900)
-    httpd = server_class(server_address, handler_class)
-    httpd.serve_forever()
+def get_state_from_coords(lat_lng):
+    """take a 2-tuple of floats representing latitude and longitude. return the containing US state"""
 
-run()
+    conn = psycopg2.connect(host="172.17.0.1", port = 5432, database="postgres", user="postgres")
+    
+    cur = conn.cursor()
 
+    cur.execute("SELECT name FROM gis.states where ST_CONTAINS(geom, ST_SetSRID( ST_POINT(" + str(lat_lng[1]) + "," + str(lat_lng[0]) + "), 4326))")
+    query_results = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    if len(query_results) > 0:
+        return query_results[0][0]
+    else:
+        print ("empty query results")
+
+
+@app.route('/address',methods = ['GET'])
+def index():
+    return get_state_from_coords(geocode(request.headers['address']))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
