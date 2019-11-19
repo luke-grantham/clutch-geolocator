@@ -29,6 +29,9 @@ def get_state_from_coords(lat_lng):
     cur.execute("SELECT NULLIF(name, '') FROM gis.states where ST_CONTAINS(geom, ST_SetSRID( ST_POINT(" + str(lat_lng[1]) + "," + str(lat_lng[0]) + "), 4326))")
 
     query_results = cur.fetchall()
+
+    cur.close()
+    conn.close()
    
     if len(query_results) > 0:
         return query_results[0][0]
