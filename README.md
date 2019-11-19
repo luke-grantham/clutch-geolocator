@@ -7,10 +7,11 @@ You must have docker installed
 
 ## Set up
 Clone the repository and run setup.sh with the API key that was emailed to you
-
-`clone https://github.com/luke-grantham/clutch-geolocator.git
+~~~
+clone https://github.com/luke-grantham/clutch-geolocator.git
 cd clutch-geolocator
-./setup.sh paste-api-key-here`
+./setup.sh paste-api-key-here
+~~~
 
 ## Use
 Given an address, return the US state that contains that address
@@ -18,4 +19,5 @@ Given an address, return the US state that contains that address
 Send an HTTP GET request to `localhost:5000/address` and include a header named address whose value is the address you want to lookup
 
 Example with curl:
+
 `curl http://127.0.0.1:5000/address --header "address: 3535 Piedmont Ave, Suite 1500, Atlanta, GA 30305"`
