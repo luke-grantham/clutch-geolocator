@@ -8,7 +8,7 @@ You must have docker installed
 ## Set up
 Clone the repository and run setup.sh with the API key that was emailed to you
 ~~~
-clone https://github.com/luke-grantham/clutch-geolocator.git
+git clone https://github.com/luke-grantham/clutch-geolocator.git
 cd clutch-geolocator
 ./setup.sh paste-api-key-here
 ~~~
