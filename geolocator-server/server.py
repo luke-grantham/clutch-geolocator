@@ -15,31 +15,25 @@ def geocode(addr):
 
     address = urllib.parse.quote_plus(addr)
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + key
-
-    print (url)
  
     response = requests.get(url)
 
-    print (response.json())
     return (response.json()['results'][0]['geometry']['location']['lat'], response.json()['results'][0]['geometry']['location']['lng'])
 
 def get_state_from_coords(lat_lng):
     """take a 2-tuple of floats representing latitude and longitude. return the containing US state"""
 
     conn = psycopg2.connect(host="172.17.0.1", port = 5432, database="postgres", user="postgres")
-    
     cur = conn.cursor()
 
-    cur.execute("SELECT name FROM gis.states where ST_CONTAINS(geom, ST_SetSRID( ST_POINT(" + str(lat_lng[1]) + "," + str(lat_lng[0]) + "), 4326))")
-    query_results = cur.fetchall()
-    cur.close()
-    conn.close()
+    cur.execute("SELECT NULLIF(name, '') FROM gis.states where ST_CONTAINS(geom, ST_SetSRID( ST_POINT(" + str(lat_lng[1]) + "," + str(lat_lng[0]) + "), 4326))")
 
+    query_results = cur.fetchall()
+   
     if len(query_results) > 0:
         return query_results[0][0]
     else:
-        print ("empty query results")
-
+        return "That address is outside the United States"
 
 @app.route('/address',methods = ['GET'])
 def index():
