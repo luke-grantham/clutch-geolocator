@@ -8,7 +8,7 @@ import psycopg2
 
 app = Flask(__name__)
 key = sys.argv[1]
-
+docker_gateway_ip="172.17.0.1"
 
 def geocode(addr):
     """take a string address and return a lat,long tuple"""
@@ -23,7 +23,7 @@ def geocode(addr):
 def get_state_from_coords(lat_lng):
     """take a 2-tuple of floats representing latitude and longitude. return the containing US state"""
 
-    conn = psycopg2.connect(host="172.17.0.1", port = 5432, database="postgres", user="postgres")
+    conn = psycopg2.connect(host=docker_gateway_ip, port = 5432, database="postgres", user="postgres")
     cur = conn.cursor()
 
     cur.execute("SELECT NULLIF(name, '') FROM gis.states where ST_CONTAINS(geom, ST_SetSRID( ST_POINT(" + str(lat_lng[1]) + "," + str(lat_lng[0]) + "), 4326))")
