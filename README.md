@@ -13,10 +13,12 @@ cd clutch-geolocator
 ./setup.sh paste-api-key-here
 ~~~
 
+You can run `docker ps` to check that two docker containers have been started.
+
 ## Use
 Given an address, return the US state that contains that address
 
-Send an HTTP GET request to `localhost:5000/address` and include a header named address whose value is the address you want to lookup
+Send an HTTP GET request to `localhost:5000/address` and include a header named `address` whose value is the address you want to lookup
 
 Example with curl:
 
