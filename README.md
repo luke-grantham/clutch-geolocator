@@ -21,3 +21,7 @@ Send an HTTP GET request to `localhost:5000/address` and include a header named 
 Example with curl:
 
 `curl http://127.0.0.1:5000/address --header "address: 3535 Piedmont Ave, Suite 1500, Atlanta, GA 30305"`
+
+### troubleshooting
+
+If you have changed the default subnet for your Docker installation, you'll need to run `docker network inspect bridge`, find your Gateway IP, change the variable `docker_gateway_ip` inside `server.py` to that value, then run the setup script again.
