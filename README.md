@@ -1,5 +1,5 @@
-# clutch-geolocator
-a web service that can do some basic geolocation
+# take-home-interview-geolocator
+This is a take-home interview I finished. It is a python REST API with a single endpoint that will return the US state that contains the given address. The assignment required an API call to Google's Maps API and a lookup from a geography data set loaded in PostgreSQL.
 
 
 ## Prerequisites
@@ -8,8 +8,8 @@ You must have docker installed
 ## Set up
 Clone the repository and run setup.sh with the API key that was emailed to you
 ~~~
-git clone https://github.com/luke-grantham/clutch-geolocator.git
-cd clutch-geolocator
+git clone https://github.com/luke-grantham/take-home-interview-geolocator.git
+cd take-home-interview-geolocator
 ./setup.sh paste-api-key-here
 ~~~
 
@@ -22,7 +22,7 @@ Send an HTTP GET request to `localhost:5000/address` and include a header named 
 
 Example with curl:
 
-`curl http://127.0.0.1:5000/address --header "address: 3535 Piedmont Ave, Suite 1500, Atlanta, GA 30305"`
+`curl http://127.0.0.1:5000/address --header "address: 1600 Amphitheatre Parkway"`
 
 ### troubleshooting
 
